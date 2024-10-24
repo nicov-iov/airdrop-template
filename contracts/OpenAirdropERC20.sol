@@ -34,7 +34,7 @@ contract OpenAirdropERC20 is Ownable {
         _airdropAmountLeft = totalAirdropAmount;
         _claimAmount = claimAmount;
         _expirationDate = expirationDate;
-        _airdropType = AirdropType.CUSTOM;
+        _airdropType = AirdropType.FUNGIBLE;
     }
 
     function claim(address user, uint256 amount, bytes32[] calldata proof) public onlyOwner {

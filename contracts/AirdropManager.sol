@@ -3,6 +3,8 @@ pragma solidity ^0.8.19;
 
 import "./Administrable.sol";
 import "./OpenAirdropERC20.sol";
+import "./CustomAirdrop1155.sol";
+import "./CustomAirdrop1155ClaimMerkle.sol";
 import "./Types.sol";
 
 contract AirdropManager is Administrable {
@@ -12,7 +14,8 @@ contract AirdropManager is Administrable {
 
     event AirdropAdded(address airdropAddress);
     event AirdropRemoved(address airdropAddress);
-    event AirdropDeployed(address airdropAddress);
+    event AirdropERC20Deployed(address airdropAddress);
+    event AirdropERC1155Deployed(address airdropAddress);
 
     function claim(address airdropAddress, address user, uint256 amount, bytes32[] calldata proof) public {
         IAirdrop airdrop = IAirdrop(airdropAddress);
@@ -68,20 +71,61 @@ contract AirdropManager is Administrable {
         return _airdrops;
     }
 
-    function deployAndAddOpenERC20Airdrop(
+    function deployAndAddAirdrop(
         string memory airdropName,
         address tokenAddress,
+        uint256 tokenId,
         uint256 totalAirdropAmount,
         uint256 claimAmount,
-        uint256 expirationDate
+        uint256 expirationDate,
+        uint256 mode,
+        AirdropType airdropType
     ) public returns(address) {
-        OpenAirdropERC20 deployedAirdrop = new OpenAirdropERC20(airdropName, address(this), tokenAddress, totalAirdropAmount, claimAmount, expirationDate);
-        address airdropAddress = address(deployedAirdrop);
+        if(mode == 0) {
+            OpenAirdropERC20 deployedAirdrop = new OpenAirdropERC20(
+                airdropName, 
+                address(this), 
+                tokenAddress, 
+                totalAirdropAmount, 
+                claimAmount, 
+                expirationDate
+            );
+            address airdropAddress = address(deployedAirdrop);
 
-        emit AirdropDeployed(airdropAddress);
-        addAirdrop(airdropAddress);
-
-        return airdropAddress;
+            emit AirdropERC20Deployed(airdropAddress);
+            addAirdrop(airdropAddress);
+            return airdropAddress;
+        } else if (mode == 1) {
+            CustomAirdrop1155 deployedAirdrop = new CustomAirdrop1155(
+                airdropName,
+                address(this),
+                tokenAddress,
+                tokenId,
+                totalAirdropAmount,
+                claimAmount,
+                expirationDate,
+                airdropType
+            );
+            address airdropAddress = address(deployedAirdrop);
+            emit AirdropERC1155Deployed(airdropAddress);
+            addAirdrop(airdropAddress);
+            return airdropAddress;
+        } else if (mode == 2) {
+            CustomAirdrop1155Merkle deployedAirdrop = new CustomAirdrop1155Merkle(
+                airdropName,
+                address(this),
+                tokenAddress,
+                tokenId,
+                totalAirdropAmount,
+                expirationDate,
+                airdropType
+            );
+            address airdropAddress = address(deployedAirdrop);
+            emit AirdropERC1155Deployed(airdropAddress);
+            addAirdrop(airdropAddress);
+        } else {
+            return address(0);
+        }
     }
 
     function addAirdrop(address newAirdropAddress) public onlyAdmins {

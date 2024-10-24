@@ -3,7 +3,8 @@ pragma solidity ^0.8.19;
 
 enum AirdropType {
     CUSTOM,
-    MERKLE
+    MERKLE,
+    FUNGIBLE
 }
 
 struct AirdropInfo {
