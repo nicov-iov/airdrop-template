@@ -3,6 +3,35 @@
 # ERC1155 Airdrop Smart Contracts Template
 This project is an open-source template for creating an ERC1155 airdrop smart contract on the RSK network. The template is designed to be easy to use and customize, and it includes a simple example of how to create an airdrop campaign and distribute tokens to multiple recipients.
 
+## Deployment
+The smart contracts in this template can be deployed to the RSK network using the next command:
+```bash
+npx hardhat ignition deploy ignition/modules/AirdropManager.ts --network rskTestnet
+```
+
+It will deploy the `AirdropManager`, `AirdropDeployerERC20Module` & `AirdropDeployerERC1155Module` contracts and its dependencies to the RSK Testnet network. You should see a response like:
+```bash
+Hardhat Ignition 🚀
+
+Deploying [ AirdropManagerModule ]
+
+Batch #1
+  Executed AirdropDeployerERC1155Module#AirdropDeployerERC1155
+  Executed AirdropDeployerERC20Module#AirdropDeployerERC20
+
+Batch #2
+  Executed AirdropManagerModule#AirdropManager
+
+[ AirdropManagerModule ] successfully deployed 🚀
+
+Deployed Addresses
+
+AirdropDeployerERC1155Module#AirdropDeployerERC1155 - 0x49dbbA265c0f4a7Ca8C277F57E189f6B90998aEE
+AirdropDeployerERC20Module#AirdropDeployerERC20 - 0xe68B923822E0b9067413be380dBED46f295F2372
+AirdropManagerModule#AirdropManager - 0xFdEdc1427b745D9876B5BBF21e2F57922CF78117
+```
+> Also, you can see the deployed contracts in the `ignition/deployments/chain-31/deployed_addresses` folder.
+
 ## Smart Contracts Reference
 
 ### 1. **Administrable.sol**
