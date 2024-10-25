@@ -15,6 +15,7 @@ struct AirdropInfo {
     uint256 claimAmount;
     uint256 expirationDate;
     AirdropType airdropType;
+    string uri;
 }
 
 interface IAirdrop {
@@ -35,12 +36,36 @@ interface IAirdrop {
     function setRoot(bytes32 _root) external;
 }
 
+interface IDeployerERC20 {
+    function deployAndAddAirdrop(
+        string memory airdropName,
+        address tokenAddress,
+        uint256 totalAirdropAmount,
+        uint256 claimAmount,
+        uint256 expirationDate
+    ) external returns(address);
+}
+
+interface IDeployer1155 {
+    function deployAndAddAirdrop(
+        string memory airdropName,
+        address tokenAddress,
+        uint256 tokenId,
+        uint256 totalAirdropAmount,
+        uint256 claimAmount,
+        uint256 expirationDate,
+        uint256 mode
+    ) external returns(address);
+}
+
 interface IERC20 {
     function transfer(address to, uint256 amount) external;
     function balanceOf(address account) external view returns (uint256);
+    function getUri() external view returns (string memory);
 }
 
 interface IERC1155 {
     function safeTransferFrom(address from, address to, uint256 id, uint256 amount, bytes memory data) external;
     function balanceOf(address account, uint256 id) external view returns (uint256);
+    function getUri() external view returns (string memory);
 }

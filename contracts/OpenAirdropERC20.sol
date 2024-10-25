@@ -55,7 +55,17 @@ contract OpenAirdropERC20 is Ownable {
     }
 
     function getAirdropInfo() public view returns(AirdropInfo memory) {
-        return AirdropInfo(_airdropName, address(this), _totalAirdropAmount, _airdropAmountLeft, _claimAmount, _expirationDate, _airdropType);
+        string memory uri = _tokenContract.getUri();
+        return AirdropInfo(
+            _airdropName, 
+            address(this),
+            _totalAirdropAmount, 
+            _airdropAmountLeft, 
+            _claimAmount, 
+            _expirationDate, 
+            _airdropType,
+            uri
+        );
     }
 
     function hasBalanceToClaim() public view returns(bool) {

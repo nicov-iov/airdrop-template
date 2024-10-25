@@ -56,7 +56,7 @@ contract CustomAirdrop1155 is Ownable {
     }
 
     function getAirdropInfo() public view returns(AirdropInfo memory) {
-        return AirdropInfo(_airdropName, address(this), _totalAirdropAmount, _airdropAmountLeft, _claimAmount, _expirationDate, _airdropType);
+        return AirdropInfo(_airdropName, address(this), _totalAirdropAmount, _airdropAmountLeft, _claimAmount, _expirationDate, _airdropType, '');
     }
 
     function hasBalanceToClaim() public view returns(bool) {
@@ -125,5 +125,10 @@ contract CustomAirdrop1155 is Ownable {
 
     function onERC1155Received(address operator, address from, uint256 id, uint256 value, bytes memory data) external pure returns (bytes4) {
         return bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"));
+    }
+
+    function getUri() public view returns (string memory) {
+        //NOT IMPLEMENTED YET
+        return 'not implemented';
     }
 }

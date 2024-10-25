@@ -1,18 +1,39 @@
 // This setup uses Hardhat Ignition to manage smart contract deployments.
 // Learn more about it at https://hardhat.org/ignition
 
-import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
+import { buildModule } from '@nomicfoundation/hardhat-ignition/modules'
 
-const AirdropManagerModule = buildModule("AirdropManagerModule", (m) => {
-  const initialValues = [
-    "0x6927ABD63Da2Da250E6676c64cF14586E1E1fA10",
-  ]
-  const initialAdmins = m.getParameter("initialAdmins", initialValues);
+const AirdropDeployerERC20Module = buildModule(
+  'AirdropDeployerERC20Module',
+  (m) => {
+    const airdropDeployerERC20 = m.contract('AirdropDeployerERC20', [])
+    console.log('AirdropDeployerERC20 deployed');
+    return { airdropDeployerERC20 }
+  }
+)
+const AirdropDeployerERC1155Module = buildModule(
+  'AirdropDeployerERC1155Module',
+  (m) => {
+    const airdropDeployerERC1155 = m.contract('AirdropDeployerERC1155', [])
+    console.log('AirdropDeployerERC1155 deployed');
+    return { airdropDeployerERC1155 }
+  }
+)
 
-  const airdropManager = m.contract("AirdropManager", [initialAdmins]);
+const AirdropManagerModule = buildModule('AirdropManagerModule', (m) => {
+  const { airdropDeployerERC20 } = m.useModule(AirdropDeployerERC20Module)
+  const { airdropDeployerERC1155 } = m.useModule(AirdropDeployerERC1155Module)
+  console.log('airdropDeployerERC20', airdropDeployerERC20);
+  console.log('airdropDeployerERC1155', airdropDeployerERC1155);
+  const initialValues = ['0x6927ABD63Da2Da250E6676c64cF14586E1E1fA10']
+  const initialAdmins = m.getParameter('initialAdmins', initialValues)
 
-  return { airdropManager };
-});
+  const airdropManager = m.contract('AirdropManager', [
+    initialAdmins,
+    airdropDeployerERC20,
+    airdropDeployerERC1155,
+  ])
+  return { airdropManager }
+})
 
-export default AirdropManagerModule;
-
+export default AirdropManagerModule
