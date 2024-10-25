@@ -32,6 +32,30 @@ AirdropManagerModule#AirdropManager - 0xFdEdc1427b745D9876B5BBF21e2F57922CF78117
 ```
 > Also, you can see the deployed contracts in the `ignition/deployments/chain-31/deployed_addresses` folder.
 
+## Verify Contracts
+To verify the contracts on the RSK network, you can use the next command:
+1. AirdropDeployerERC1155
+```bash
+npx hardhat verify --network rskTestnet 0x49dbbA265c0f4a7Ca8C277F57E189f6B90998aEE
+```
+***Note: Replace the address `0x49dbbA265c0f4a7Ca8C277F57E189f6B90998aEE` with the address of the contract you want to verify.***
+
+2. AirdropDeployerERC20
+```bash
+npx hardhat verify --network rskTestnet 0xe68B923822E0b9067413be380dBED46f295F2372
+```
+***Note: Replace the address `0xe68B923822E0b9067413be380dBED46f295F2372` with the address of the contract you want to verify.***
+
+3. AirdropManager, for this contract verification, you need to pass the constructor arguments in the file `AirdropManagerArguments.js`, so make sure you replace them with your own args:
+```bash
+npx hardhat verify --constructor-args AirdropManagerArguments.js --network rskTestnet 0xFdEdc1427b745D9876B5BBF21e2F57922CF78117
+```
+You should see a response like this in each verification:
+```bash
+Successfully verified contract AirdropDeployerERC20 on the block explorer.
+https://rootstock-testnet.blockscout.com/address/0xe68B923822E0b9067413be380dBED46f295F2372#code
+```
+
 ## Smart Contracts Reference
 
 ### 1. **Administrable.sol**
