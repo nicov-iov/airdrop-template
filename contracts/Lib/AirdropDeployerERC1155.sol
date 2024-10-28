@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "./CustomAirdrop1155.sol";
-import "./CustomAirdrop1155Merkle.sol";
-import "./Types.sol";
+import "../ERC1155/CustomAirdrop1155.sol";
+import "../ERC1155/CustomAirdrop1155Merkle.sol";
+import "../Tools/Types.sol";
 
 contract AirdropDeployerERC1155 {
     constructor() {}

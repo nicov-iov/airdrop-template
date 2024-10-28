@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "./Administrable.sol";
-import "./Types.sol";
+import "./Lib/Administrable.sol";
+import "./Tools/Types.sol";
 
 contract AirdropManager is Administrable {
     address _airdropDeployerERC20Address;

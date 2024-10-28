@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "./OpenAirdropERC20.sol";
-import "./Types.sol";
+import "../ERC20/OpenAirdropERC20.sol";
+import "../Tools/Types.sol";
 
 contract AirdropDeployerERC20{
     constructor() {}

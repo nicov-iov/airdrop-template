@@ -2,12 +2,12 @@
 pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./Types.sol";
+import "../Tools/Types.sol";
 
-contract CustomAirdrop1155 is Ownable {
+import { MerkleProof } from "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+
+contract CustomAirdrop1155Merkle is Ownable {
     event Claim(address recipient, uint256 amount);
-    event AddressAllowed(address allowedAddress);
-    event AddressDisallowed(address disallowedAddress);
 
     IERC1155 _tokenContract;
     uint256 _totalAirdropAmount;
@@ -18,8 +18,13 @@ contract CustomAirdrop1155 is Ownable {
     string _airdropName;
     AirdropType _airdropType;
 
-    mapping(address => bool) _allowedAddresses;
+    // (account,amount) Merkle Tree root
+    bytes32 public root;
+    error InvalidProof();
+    error UsedLeaf();
+
     mapping(address => bool) _addressesThatAlreadyClaimed;
+    mapping(bytes32 => bool) public claimedLeaf;
 
     constructor(
         string memory airdropName,
@@ -27,7 +32,6 @@ contract CustomAirdrop1155 is Ownable {
         address tokenAddress,
         uint256 tokenId,
         uint256 totalAirdropAmount,
-        uint256 claimAmount,
         uint256 expirationDate,
         AirdropType airdropType
     ) Ownable(initialOwner) {
@@ -36,35 +40,44 @@ contract CustomAirdrop1155 is Ownable {
         _tokenId = tokenId;
         _totalAirdropAmount = totalAirdropAmount;
         _airdropAmountLeft = totalAirdropAmount;
-        _claimAmount = claimAmount;
         _expirationDate = expirationDate;
         _airdropType = airdropType;
     }
 
-    function claim(address user, uint256 amount, bytes32[] calldata proof) public onlyOwner {
-        require(isAllowed(user), "Address not allowed to claim this airdrop");
+    function setRoot(bytes32 _root) public onlyOwner {
+        root = _root;
+    }
+
+    function claim(address user, uint256 amount, bytes32[] calldata proof) external onlyOwner{
+        _claim(user, amount, proof);
+    }
+
+    function _claim(address origin_, uint256 amount_, bytes32[] calldata proof_) internal {
+        bytes32 leaf = _buildLeaf(origin_, amount_);
+
+        if (!MerkleProof.verifyCalldata(proof_, root, leaf)) revert InvalidProof();
+        if (claimedLeaf[leaf]) revert UsedLeaf();
+        claimedLeaf[leaf] = true;
         require(!hasExpired(), "Airdrop already expired.");
-        require(!hasClaimed(user), "Address already claimed this airdrop.");
         require(!hasBeenTotallyClaimed(), "Airdrop has been totally claimed already.");
-        require(hasBalanceToClaim(), "Airdrop contract has insufficient token balance.");
 
-        _tokenContract.safeTransferFrom(address(this), user, _tokenId, _claimAmount, '');
-        _airdropAmountLeft -= _claimAmount;
-        _addressesThatAlreadyClaimed[user] = true;
+        _tokenContract.safeTransferFrom(address(this), origin_, _tokenId, amount_, '');
+        _airdropAmountLeft -= amount_;
+        _addressesThatAlreadyClaimed[origin_] = true;
 
-        emit Claim(user, _claimAmount);
+        emit Claim(origin_, amount_);
+    }
+
+    function _buildLeaf(address origin_, uint256 amount_) internal pure returns (bytes32) {
+        return keccak256(bytes.concat(keccak256(abi.encode(origin_, amount_))));
     }
 
     function getAirdropInfo() public view returns(AirdropInfo memory) {
-        return AirdropInfo(_airdropName, address(this), _totalAirdropAmount, _airdropAmountLeft, _claimAmount, _expirationDate, _airdropType, '');
-    }
-
-    function hasBalanceToClaim() public view returns(bool) {
-        return _tokenContract.balanceOf(address(this), _tokenId) >= _claimAmount;
+        return AirdropInfo(_airdropName, address(this), _totalAirdropAmount, _airdropAmountLeft, 0, _expirationDate, _airdropType, '');
     }
 
     function hasBeenTotallyClaimed() public view returns(bool) {
-        return _airdropAmountLeft < _claimAmount;
+        return _airdropAmountLeft < 1;
     }
 
     function hasClaimed(address _address) public view returns(bool) {
@@ -75,40 +88,8 @@ contract CustomAirdrop1155 is Ownable {
         return _expirationDate < block.timestamp;
     }
 
-    function allowAddress(address _address) public onlyOwner {
-        _allowedAddresses[_address] = true;
-        emit AddressAllowed(_address);
-    }
-
-    function allowAddresses(address[] memory addresses) public onlyOwner {
-        for (uint i; i < addresses.length; i++) {
-            _allowedAddresses[addresses[i]] = true;
-            emit AddressAllowed(addresses[i]);
-        }
-    }
-
-    function disallowAddresses(address[] memory addresses) public onlyOwner {
-        for (uint i; i < addresses.length; i++) {
-            _allowedAddresses[addresses[i]] = false;
-            emit AddressDisallowed(addresses[i]);
-        }
-    }
-
-    function disallowAddress(address _address) public onlyOwner {
-        _allowedAddresses[_address] = false;
-        emit AddressDisallowed(_address);
-    }
-
-    function isAllowed(address _address) public view returns(bool) {
-        return _allowedAddresses[_address];
-    }
-
     function getExpirationDate() public view returns(uint256) {
         return _expirationDate;
-    }
-
-    function getClaimAmount() public view returns(uint256) {
-        return _claimAmount;
     }
 
     function getTotalAirdropAmount() public view returns(uint256) {

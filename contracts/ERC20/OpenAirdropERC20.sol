@@ -2,7 +2,7 @@
 pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./Types.sol";
+import "../Tools/Types.sol";
 
 contract OpenAirdropERC20 is Ownable {
     event Claim(address recipient, uint256 amount);
