@@ -104,7 +104,7 @@ contract AirdropManager is Administrable {
         uint256 totalAirdropAmount,
         uint256 claimAmount,
         uint256 expirationDate
-    ) public onlyAdmins returns(address) {
+    ) public returns(address) {
         IDeployerERC20 deployerERC20 = IDeployerERC20(_airdropDeployerERC20Address);
         address deployedAddress = deployerERC20.deployAndAddAirdrop(
             airdropName,
@@ -126,7 +126,7 @@ contract AirdropManager is Administrable {
         uint256 claimAmount,
         uint256 expirationDate,
         uint256 mode
-    ) public onlyAdmins returns(address) {
+    ) public returns(address) {
         IDeployer1155 deployer1155 = IDeployer1155(_airdropDeployerERC1155Address);
         address deployedAddress = deployer1155.deployAndAddAirdrop(
             airdropName,

@@ -15,7 +15,7 @@ contract AirdropDeployerERC20{
     ) public returns (address) {
         OpenAirdropERC20 deployedAirdrop = new OpenAirdropERC20(
             airdropName,
-            address(this),
+            msg.sender,
             tokenAddress,
             totalAirdropAmount,
             claimAmount,
