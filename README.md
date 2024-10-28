@@ -26,9 +26,9 @@ Batch #2
 
 Deployed Addresses
 
-AirdropDeployerERC1155Module#AirdropDeployerERC1155 - 0x49dbbA265c0f4a7Ca8C277F57E189f6B90998aEE
-AirdropDeployerERC20Module#AirdropDeployerERC20 - 0xe68B923822E0b9067413be380dBED46f295F2372
-AirdropManagerModule#AirdropManager - 0xFdEdc1427b745D9876B5BBF21e2F57922CF78117
+AirdropDeployerERC1155Module#AirdropDeployerERC1155 - 0x6465331bBf430f53504cb94BF2d2AF32E5740F68
+AirdropDeployerERC20Module#AirdropDeployerERC20 - 0xda0c531F4dAFED4E6bc6EfBe2D281C49BA5eE049
+AirdropManagerModule#AirdropManager - 0x19Fa15E7084D802335cfC1B7d5AC22a6b80Bf6Ef
 ```
 > Also, you can see the deployed contracts in the `ignition/deployments/chain-31/deployed_addresses` folder.
 
@@ -56,6 +56,17 @@ Successfully verified contract AirdropDeployerERC20 on the block explorer.
 https://rootstock-testnet.blockscout.com/address/0xe68B923822E0b9067413be380dBED46f295F2372#code
 ```
 
+## Deploy ERC1155
+We have included an ERC1155 contract in the `contracts/ERC1155/Erc1155.sol` file. You can modify it as needed and deploy it to the RSK network.
+
+To deploy your ERC1155 contract, you can use the next command:
+```bash
+npx hardhat ignition deploy ignition/modules/ERC1155.ts --network rskTestnet
+```
+And then you can use the next command to verify the contract:
+```bash
+npx hardhat verify --network rskTestnet 0xe68B923822E0b9067413be380dBED46f295F2372
+```
 ## Smart Contracts Reference
 
 ### 1. **Administrable.sol**
