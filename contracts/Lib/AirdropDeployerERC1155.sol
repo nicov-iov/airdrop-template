@@ -7,6 +7,8 @@ import "../Tools/Types.sol";
 
 contract AirdropDeployerERC1155 {
     constructor() {}
+    // Este nombre puede confundir, ya que los deployers solo despliegan contratos
+    // Cualquiera puede deployar un airdrop?
     function deployAndAddAirdrop(
         string memory airdropName,
         address tokenAddress,

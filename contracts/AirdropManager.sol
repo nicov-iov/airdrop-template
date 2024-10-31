@@ -4,6 +4,8 @@ pragma solidity ^0.8.19;
 import "./Lib/Administrable.sol";
 import "./Tools/Types.sol";
 
+// Contexto: Se abstrajo la logica de despliegues de airdrops en dos contratos diferentes, uno para ERC20 y otro para ERC1155
+// Motivo: Costo excesivo de gas en el despliegue de contratos
 contract AirdropManager is Administrable {
     address _airdropDeployerERC20Address;
     address _airdropDeployerERC1155Address;
@@ -11,6 +13,8 @@ contract AirdropManager is Administrable {
 
     event AirdropAdded(address airdropAddress);
     event AirdropRemoved(address airdropAddress);
+    // simplificar a un solo evento? 
+    // AirDropDeployed(address airdropAddress, string airdropType)
     event AirdropERC20Deployed(address airdropAddress);
     event AirdropERC1155Deployed(address airdropAddress);
 
@@ -23,6 +27,8 @@ contract AirdropManager is Administrable {
         _airdropDeployerERC1155Address = airdropDeployerERC1155Address;
     }
 
+    // Veo que el AirdropManager sigue la convencion de nombres de la interfaz de Airdrops (IAirdrop)
+    // pero las firmas no coinciden (distintos params). Podria crearse una interfaz para el AirdropManager
     function claim(
         address airdropAddress,
         address user,
@@ -98,6 +104,7 @@ contract AirdropManager is Administrable {
         return _airdrops;
     }
 
+    // cualquiera puede llamar a funcion?
     function deployAndAddAirdropERC20(
         string memory airdropName,
         address tokenAddress,
@@ -107,6 +114,7 @@ contract AirdropManager is Administrable {
     ) public returns(address) {
         IDeployerERC20 deployerERC20 = IDeployerERC20(_airdropDeployerERC20Address);
         address deployedAddress = deployerERC20.deployAndAddAirdrop(
+            // deployerERC20.deployAirdrop() sería mas claro
             airdropName,
             tokenAddress,
             totalAirdropAmount,
@@ -118,6 +126,7 @@ contract AirdropManager is Administrable {
         return deployedAddress;
     }
 
+    // cualquiera puede llamar a funcion?
     function deployAndAddAirdropERC1155(
         string memory airdropName,
         address tokenAddress,
@@ -129,6 +138,7 @@ contract AirdropManager is Administrable {
     ) public returns(address) {
         IDeployer1155 deployer1155 = IDeployer1155(_airdropDeployerERC1155Address);
         address deployedAddress = deployer1155.deployAndAddAirdrop(
+        // deployer1155.deployAirdrop() sería mas claro
             airdropName,
             tokenAddress,
             tokenId,
@@ -144,6 +154,7 @@ contract AirdropManager is Administrable {
     }
 
     function addAirdrop(address newAirdropAddress) internal {
+        // ok
         bool exists = false;
         for (uint i = 0; i < _airdrops.length && !exists; i++) {
             exists = _airdrops[i] == newAirdropAddress;
@@ -159,6 +170,7 @@ contract AirdropManager is Administrable {
     }
 
     function removeAirdrop(address airdropAddress) public onlyAdmins {
+        // ok
         bool exists = false;
         for (uint i = 0; i < _airdrops.length && !exists; i++) {
             if (_airdrops[i] == airdropAddress) {
@@ -171,6 +183,8 @@ contract AirdropManager is Administrable {
         if (exists) emit AirdropRemoved(airdropAddress);
     }
 
+    // estas ultimas 4 funciones son parte de IAirdrop pero solo se usan en CustomAirdrop1155
+    // podria crearse una interfaz para CustomAirdrop1155, que use IAirdrop y agregue estas funciones (lo mismo podria ser para OpenAirdropERC20)
     function allowAddress(
         address airdropAddress,
         address user

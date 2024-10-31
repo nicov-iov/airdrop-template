@@ -4,6 +4,7 @@ pragma solidity ^0.8.19;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "../Tools/Types.sol";
 
+// Se podria agregar la interfaz del Airdrop
 contract OpenAirdropERC20 is Ownable {
     event Claim(address recipient, uint256 amount);
     event AddressAllowed(address allowedAddress);
@@ -72,6 +73,8 @@ contract OpenAirdropERC20 is Ownable {
         return _tokenContract.balanceOf(address(this)) >= _claimAmount;
     }
 
+    // Abstraer una interfaz comun de Airdrop? Ej: Esta funcion no figura en la interfaz IAirdrop
+    // Tambien hay funciones en IAirdrop que no estan implementadas en este contrato, ej: setRoot()
     function hasBeenTotallyClaimed() public view returns(bool) {
         return _airdropAmountLeft < _claimAmount;
     }

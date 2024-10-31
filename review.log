@@ -1,0 +1,21 @@
+1) Docs + Config
+
+2) AirdropManager - Revisar - problemas de seguridad
+3) Administrable - OK
+4) Types - OK
+
+5) AirdropDeployerERC20 - Revisar - problemas de seguridad
+6) OpenAirdropERC20 - Revisar
+7) Erc20 - OK
+
+8) AirdropDeployerERC1155 - Revisar - problemas de seguridad
+9) CustomAirdrop1155 - OK
+10) CustomAirdrop1155Merkle - Revisar
+11) Erc1155 - OK
+
+Dudas:
+- porqué los airdrops tienen los prefijos Open y Custom? Son realmente necesarios?
+
+Hay un par de problemas de seguridad. Principalmente funciones sin restricciones de acceso.
+
+Despues en general veo todo bien, salvo el tema de la docu + config que se puede mejorar un poco mas, y las interfaces que estan un poco mezcladas

@@ -6,6 +6,7 @@ import "../Tools/Types.sol";
 
 contract AirdropDeployerERC20{
     constructor() {}
+    // Cualquiera puede deployar un airdrop?
     function deployAndAddAirdrop(
         string memory airdropName,
         address tokenAddress,

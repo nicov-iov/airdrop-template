@@ -77,6 +77,7 @@ contract CustomAirdrop1155Merkle is Ownable {
     }
 
     function hasBeenTotallyClaimed() public view returns(bool) {
+        // esto esta bien? en el otro CustomAirdrop1155 se compara contra _claimAmount
         return _airdropAmountLeft < 1;
     }
 
